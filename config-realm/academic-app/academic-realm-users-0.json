@@ -1,0 +1,26 @@
+{
+  "realm" : "academic-realm",
+  "users" : [ {
+    "id" : "00182291-b6b8-4465-95e1-5840dc018224",
+    "createdTimestamp" : 1770069124629,
+    "username" : "jsnpereira",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Jeison",
+    "lastName" : "Pereira",
+    "email" : "jsnpereira@gmail.com",
+    "credentials" : [ {
+      "id" : "2a746d70-3cb3-45c2-98e6-5448b0ab8d09",
+      "type" : "password",
+      "createdDate" : 1770071287092,
+      "secretData" : "{\"value\":\"lgR5WANWo+804WVetJg+q+ZFDlyQSQCsfIUY3FNUOko=\",\"salt\":\"mfn8qNgZoyucXcll5aLbAw==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-academic-realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}

@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # MySQL compartilhado - usado pelo Keycloak e outros apps em QA
+  mysql-shared:
+    image: mysql:8.0
+    container_name: mysql-shared-qa
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-shared_db}
+      MYSQL_USER: ${MYSQL_USER:-appuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-appuser123}
+    volumes:
+      - mysql_shared_qa_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d  # Scripts de inicialização
+    ports:
+      - "3307:3306"  # Porta diferente para não conflitar
+    networks:
+      - qa-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog-qa
+    ports:
+      - "1026:1025"  # SMTP - porta diferente
+      - "8026:8025"  # Interface Web - porta diferente
+    networks:
+      - qa-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    container_name: keycloak-qa
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin123}
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql-shared-qa:3306/keycloak_schema?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      KC_DB_USERNAME: ${MYSQL_USER:-appuser}
+      KC_DB_PASSWORD: ${MYSQL_PASSWORD:-appuser123}
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_PORT: 8080
+    command: ["start", "--http-enabled=true"]
+    depends_on:
+      mysql-shared:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      - keycloak_qa_data:/opt/keycloak/data
+      - ./config-realm/financeiro-app:/opt/keycloak/data/import
+    networks:
+      - qa-network
+
+volumes:
+  mysql_shared_qa_data:
+  keycloak_qa_data:
+
+networks:
+  qa-network:
+    driver: bridge
+    name: qa-network
