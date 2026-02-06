@@ -378,6 +378,14 @@ http://localhost:8080/realms/myrealm/protocol/openid-connect/registrations?clien
 http://localhost:8080/realms/myrealm/protocol/openid-connect/logout?redirect_uri=http://localhost:3000
 ```
 
+#### Logout Sem Confirmação
+
+```
+http://localhost:8080/realms/myrealm/protocol/openid-connect/logout?post_logout_redirect_uri=http://localhost:3000&client_id=frontend-app
+```
+
+💡 **Dica**: Use `post_logout_redirect_uri` ao invés de `redirect_uri` para evitar a tela de confirmação de logout.
+
 #### Gerenciamento de Conta
 
 ```
@@ -501,7 +509,89 @@ curl -X POST http://localhost:8080/realms/myrealm/protocol/openid-connect/token/
   -d "token=SEU_ACCESS_TOKEN"
 ```
 
-### 6. Testar Fluxo de Recuperação de Senha
+### 6. Implementar Logout Sem Confirmação
+
+#### JavaScript/Frontend
+
+```javascript
+function logout() {
+  const keycloakUrl = "http://localhost:8080";
+  const realm = "myrealm";
+  const redirectUri = encodeURIComponent("http://localhost:3000");
+  const clientId = "frontend-app";
+
+  window.location.href = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/logout?post_logout_redirect_uri=${redirectUri}&client_id=${clientId}`;
+}
+```
+
+#### Via API (Node.js)
+
+```javascript
+const axios = require("axios");
+
+async function logoutUser(refreshToken) {
+  try {
+    await axios.post(
+      "http://localhost:8080/realms/myrealm/protocol/openid-connect/logout",
+      new URLSearchParams({
+        client_id: "frontend-app",
+        refresh_token: refreshToken,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
+    );
+    console.log("✅ Logout realizado com sucesso");
+  } catch (error) {
+    console.error("❌ Erro no logout:", error.response?.data);
+  }
+}
+```
+
+### 6. Implementar Logout Sem Confirmação
+
+#### JavaScript/Frontend
+
+```javascript
+function logout() {
+  const keycloakUrl = "http://localhost:8080";
+  const realm = "myrealm";
+  const redirectUri = encodeURIComponent("http://localhost:3000");
+  const clientId = "frontend-app";
+
+  window.location.href = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/logout?post_logout_redirect_uri=${redirectUri}&client_id=${clientId}`;
+}
+```
+
+#### Via API (Node.js)
+
+```javascript
+const axios = require("axios");
+
+async function logoutUser(refreshToken) {
+  try {
+    await axios.post(
+      "http://localhost:8080/realms/myrealm/protocol/openid-connect/logout",
+      new URLSearchParams({
+        client_id: "frontend-app",
+        refresh_token: refreshToken,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
+    );
+    console.log("✅ Logout realizado com sucesso");
+  } catch (error) {
+    console.error("❌ Erro no logout:", error.response?.data);
+  }
+}
+```
+
+### 7. Testar Fluxo de Recuperação de Senha
 
 1. Acesse a tela de login
 2. Clique em **Forgot Password?**

@@ -381,6 +381,14 @@ http://localhost:8080/realms/myrealm/protocol/openid-connect/registrations?clien
 http://localhost:8080/realms/myrealm/protocol/openid-connect/logout?redirect_uri=http://localhost:3000
 ```
 
+#### Logout Without Confirmation
+
+```
+http://localhost:8080/realms/myrealm/protocol/openid-connect/logout?post_logout_redirect_uri=http://localhost:3000&client_id=frontend-app
+```
+
+💡 **Tip**: Use `post_logout_redirect_uri` instead of `redirect_uri` to skip the logout confirmation screen.
+
 #### Account Management
 
 ```
@@ -504,7 +512,48 @@ curl -X POST http://localhost:8080/realms/myrealm/protocol/openid-connect/token/
   -d "token=SEU_ACCESS_TOKEN"
 ```
 
-### 6. Test Password Recovery Flow
+### 3. Implement Logout Without Confirmation
+
+#### JavaScript/Frontend
+
+```javascript
+function logout() {
+  const keycloakUrl = "http://localhost:8080";
+  const realm = "myrealm";
+  const redirectUri = encodeURIComponent("http://localhost:3000");
+  const clientId = "frontend-app";
+
+  window.location.href = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/logout?post_logout_redirect_uri=${redirectUri}&client_id=${clientId}`;
+}
+```
+
+#### Via API (Node.js)
+
+```javascript
+const axios = require("axios");
+
+async function logoutUser(refreshToken) {
+  try {
+    await axios.post(
+      "http://localhost:8080/realms/myrealm/protocol/openid-connect/logout",
+      new URLSearchParams({
+        client_id: "frontend-app",
+        refresh_token: refreshToken,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      },
+    );
+    console.log("✅ Logout successful");
+  } catch (error) {
+    console.error("❌ Logout error:", error.response?.data);
+  }
+}
+```
+
+### 4. Test Password Recovery Flow
 
 1. Access the login screen
 2. Click **Forgot Password?**
