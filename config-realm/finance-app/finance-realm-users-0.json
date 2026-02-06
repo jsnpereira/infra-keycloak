@@ -1,0 +1,26 @@
+{
+  "realm" : "finance-realm",
+  "users" : [ {
+    "id" : "bf04d8bb-9069-4217-8c01-29e9ff69eb89",
+    "createdTimestamp" : 1770236498352,
+    "username" : "jsnpereira@gmail.com",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "jeison",
+    "lastName" : "pereira",
+    "email" : "jsnpereira@gmail.com",
+    "credentials" : [ {
+      "id" : "26c92b58-c8e8-433b-bc83-9fd0bb99994d",
+      "type" : "password",
+      "createdDate" : 1770236498554,
+      "secretData" : "{\"value\":\"OgR9dHlpcyUXiFl3n56nMNt+NABTVuLbM+RwTa4FPW4=\",\"salt\":\"P8n5oNvkFikzDkMH6c9meQ==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-finance-realm" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}
